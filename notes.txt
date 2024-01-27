@@ -1,0 +1,214 @@
+1.what is closures ? 
+Closures keep all the variables accessible to your function, even after the function has finished running.
+function outerFunc(outervariable) {
+  return function innerFunc(innervariable) {
+    console.log('Outer variable' + ' ' + outervariable);
+    console.log('Inner variable' + ' ' + innervariable);
+  };
+}
+const newFunc = outerFunc('outside');
+newFunc('inside');
+
+
+2.what is AJAX ? 
+Ajax stands for Asynchronouse Javascript and XML. It helps to make Asynchronouse request to server and we will get the response.
+We will use XMLHttpRequest object to perform the actions
+It enables dynamic update to the web pages, without requring the full page reload. 
+var xhr = new XMLHttpRequest();
+
+xhr.open('GET', 'https://jsonplaceholder.typicod.com/posts', true);
+
+xhr.onload = function () {
+  if (xhr.status == 200) {
+    var data = xhr.responseText;
+    document.getElementById('postsContainer').innerHTML = data;
+  } else {
+    console.error('Fetch failed with status code' + xhr.status);
+  }
+};
+
+xhr.onerror = function (error) {
+  console.error('Error' + ' ' + error);
+};
+xhr.send();
+
+
+3.What is hoisting ? 
+Hosting is default behaviour of Javascript, moving all the declaration of variable to the top of the code and not the assignment
+
+console.log(x); // undefined
+var x = 4;
+
+console.log(x) // cannot access x before initialization 
+const x = 4;
+
+4.What is Event Loop ?
+The event loop is a mechanism in JavaScript (and other similar languages/environments) that allows asynchronous operations to be handled. 
+It continuously checks the call stack (where function calls are stored) and the callback queue (where asynchronous tasks are placed after completion) for tasks that need to be executed. When the call stack is empty, the event loop picks tasks from the callback queue and pushes them onto the call stack for execution.
+
+console.log('first');
+setTimeout(() => {
+  console.log('second');
+}, 0);
+console.log('third');
+
+it console logs 'first'
+then settimeout will pushed to queue 
+it console logs 'third' 
+
+after stack is empty, so it console.logs second
+This demonstrates how asynchronous tasks scheduled with setTimeout are managed by the event loop in JavaScript.
+
+
+5.How do you handle errors in js ? 
+- using try catch 
+- using throw new Error()
+- using promises 
+- window.onerror 
+- window event listeners 
+
+try catch:
+const fetchdata = async () => {
+  try {
+    const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+    const data = await res.json();
+    const container = document.createElement('div');
+    data.forEach((item) => {
+      const paragaraph = document.createElement('p');
+      paragaraph.textContent = item?.title;
+      container.appendChild(paragaraph);
+    });
+    document.body.appendChild(container);
+  } catch (error) {
+    console.log('Error' + ' ' + error);
+  }
+};
+
+throw new Error :
+const handleErrorFetch = () => {
+  throw new Error('error fetching data');
+};
+
+promises:
+const fetchData = () => {
+  return new Promise((resolve, reject) => {
+    fetch('https://jsonplaceholder.typicode.com/posts')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        resolve(data);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
+
+// Usage
+fetchData()
+  .then((data) => {
+    console.log('Data fetched successfully:', data);
+    // Handle data here
+  })
+  .catch((error) => {
+    console.error('Error fetching data:', error);
+    // Handle error here
+  });
+
+onError :
+window.onerror = function (message, source, lineno, colno, error) {
+  console.error('Error:', message, 'at', source, 'line:', lineno, 'column:', colno);
+  if (error) {
+    console.error('Error object:', error);
+  }
+};
+
+addEventListener :
+window.addEventListener('error', function (event) {
+  console.error('Source:', event.filename, 'line:', event.lineno, 'column:', event.colno);
+  if (event.error) {
+    console.error('Error object:', event.error);
+  }
+  // Optionally, you can call event.preventDefault() to prevent the default browser error handling
+  // event.preventDefault();
+});
+
+6. Callback function ?
+Callback function is passing a function as an argument to a another function and it will be executed inside the other function 
+function add(a, b) {
+  return a + b;
+}
+function multiply(a, b) {
+  return a * b;
+}
+const domath = function (a, b, callback) {
+  return callback(a, b);
+};
+const result = domath(10, 10, multiply);
+
+7. What is DOM ?
+DOM stands for Document Object Model, which act as a tree-like structure. where each node represents the parts of a document
+such as element, attributes or text.
+
+8.SetTimeout 
+Set Timeout function is used for schedule a task to be executed after a given period of time in milliseconds
+function sayMyName(name) {
+  console.log('Hi' + ' ' + name);
+}
+setTimeout(function () {
+  sayMyName('ferolic');
+}, 4000);
+
+9.Set Timeout 
+Set Timeout function is used to execute the code repeteadly for the given period of time 
+We can stop this by using the clear interval;
+function clock() {
+  var count = 0;
+
+  const second = setInterval(function () {
+    count++;
+    console.log('count' + ' ' + count);
+
+    if (count === 3) {
+      clearInterval(second);
+    }
+  }, 1000);
+}
+
+10.Diff b/w null and undefined ? 
+null is a value that represents the intentional absence of any object value.
+It is explicitly assigned to indicate that a variable intentionally does not contain any value.
+undefined means a variable has been declared, 
+but it has not yet been assigned a value or it may represent the result of accessing a non-existent property or missing function arguments
+
+11. What is EventEmiiter in node js ?
+EventEmitter in Node.js facilitates event-driven programming. 
+It allows objects to subscribe to events and be notified when those events occur, 
+enabling efficient asynchronous communication and handling of actions or changes.
+
+const EventEmiiter = require('events');
+const myEvent = new EventEmiiter();
+myEvent.on('greet', (name) => {
+  console.log(`Hello ${name}`)
+});
+myEvent.emit('greet', 'Hakk')
+
+12.What is prototype in javascript ? 
+A prototype in JavaScript is a reference object linked to other objects.
+ It contains properties and methods that can be inherited by those objects, forming a prototype chain for shared functionality
+ function Animal(name, sound) {
+  this.name = name;
+
+  Animal.prototype.makeSound = function () {
+    return `${this.name} sounds like ${sound}`;
+  };
+}
+
+
+
+
+
